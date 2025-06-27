@@ -1,0 +1,36 @@
+.navbar {
+  display: flex;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e8e8e8;
+  gap: 16px;
+  align-items: center;
+}
+
+.searchContainer {
+  flex: 1;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+}
+
+.filterContainer {
+  min-width: 200px;
+}
+
+.filterSelect {
+  width: 100%;
+}
+
+.sortContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.activeSort {
+    color: white;
+    background-color: #1890ff;
+  border-color: #1890ff;
+}
