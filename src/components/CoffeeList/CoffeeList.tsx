@@ -1,6 +1,6 @@
 import { Card, Row, Col } from 'antd';
 import { CoffeeOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CoffeeList.module.css';
 import { Navbar } from '../Navbar/Navbar';
 import arabica from '@/assets/coffee/arabica.jpg';
@@ -8,6 +8,8 @@ import robusta from '@/assets/coffee/robusta.jpg';
 import colombia from '@/assets/coffee/colombia.jpg';
 import ethiopia from '@/assets/coffee/ethiopia.jpg';
 import cappuccino from '@/assets/coffee/capuchino.jpg';
+import { useCoffeeStore } from '@/store/coffee.store';
+import { getCoffees } from '@/api/coffee.api';
 
 interface Coffee {
 	name: string;
@@ -55,6 +57,12 @@ export const CoffeeList: React.FC = () => {
 	const [filterType, setFilterType] = useState('all');
 	const [sortOrder, setSortOrder] = useState('none');
 
+	const { coffees, isLoading, isError, error } = useCoffeeStore();
+
+	useEffect(() => {
+		getCoffees();
+	}, []);
+
 	const filteredCoffees = coffeeData
 		.filter(
 			(coffee) =>
@@ -73,17 +81,21 @@ export const CoffeeList: React.FC = () => {
 		<div>
 			<Navbar onSearch={setSearchQuery} onFilter={setFilterType} onSort={setSortOrder} />
 			<Row gutter={[16, 16]}>
-				{filteredCoffees.map((coffee, index) => (
-					<Col key={index} xs={24} sm={12} md={6}>
-						<Card
-							hoverable
-							cover={<img alt={coffee.name} src={coffee.image} className={styles.coffeeImage} />}
-							actions={[<CoffeeOutlined key="coffee" />, <span>{coffee.price}</span>]}
-						>
-							<Card.Meta title={coffee.name} description={coffee.description} />
-						</Card>
-					</Col>
-				))}
+				{isLoading && <div>Loading...</div>}
+				{isError && <div>Error: {error}</div>}
+				{!isLoading &&
+					!isError &&
+					coffees.map((coffee, index) => (
+						<Col key={index} xs={24} sm={12} md={6}>
+							<Card
+								hoverable
+								cover={<img alt={coffee.name} src={coffee.image} className={styles.coffeeImage} />}
+								actions={[<CoffeeOutlined key="coffee" />, <span>{coffee.price}</span>]}
+							>
+								<Card.Meta title={coffee.name} description={coffee.description} />
+							</Card>
+						</Col>
+					))}
 			</Row>
 		</div>
 	);
