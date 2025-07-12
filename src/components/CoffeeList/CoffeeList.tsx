@@ -1,19 +1,25 @@
-import { useCoffeeFiltersStore } from '@/store/coffee/coffee.filters.store';
-import { useCoffeeStore } from '@/store/coffee/coffee.store';
-import { useCounterStore } from '@/store/counter.store';
+import { getCoffees, setUrlParams, useCoffeeStore } from '@/store/coffee/coffee.store';
 import { useUrlStorage } from '@/store/halpers/useUrlStorage';
 import { CoffeeOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/shallow';
+import { Counter } from '../Counter/Counter';
 import { Navbar } from '../Navbar/Navbar';
 import styles from './CoffeeList.module.css';
 
 export const CoffeeList: React.FC = () => {
-	const { coffees, isLoading, isError, error, getCoffees } = useCoffeeStore();
-	const { urlParams, setUrlParams } = useCoffeeFiltersStore();
-	useUrlStorage(urlParams, setUrlParams);
+	const { coffees, isLoading, isError, error, urlParams } = useCoffeeStore(
+		useShallow((state) => ({
+			coffees: state.coffees,
+			isLoading: state.isLoading,
+			isError: state.isError,
+			error: state.error,
+			urlParams: state.urlParams,
+		})),
+	);
 
-	const { count, increment, decrement } = useCounterStore();
+	useUrlStorage(urlParams, setUrlParams);
 
 	useEffect(() => {
 		getCoffees(urlParams);
@@ -21,7 +27,6 @@ export const CoffeeList: React.FC = () => {
 
 	return (
 		<div>
-			<Navbar />
 			<Row gutter={[16, 16]}>
 				{isLoading && <div>Loading...</div>}
 				{isError && <div>Error: {error}</div>}
@@ -39,12 +44,6 @@ export const CoffeeList: React.FC = () => {
 						</Col>
 					))}
 			</Row>
-
-			<div>
-				<Button onClick={increment}>Increment</Button>
-				<Button onClick={decrement}>Decrement</Button>
-				<span>{count}</span>
-			</div>
 		</div>
 	);
 };

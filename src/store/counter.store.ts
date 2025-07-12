@@ -24,3 +24,11 @@ export const useCounterStore = create<CounterState & CounterActions>()(
 		}),
 	),
 );
+
+export const increment = () => {
+	useCounterStore.getState().increment();
+};
+
+export const decrement = () => {
+	useCounterStore.getState().decrement();
+};

@@ -3,10 +3,11 @@ import { Button, Input, Select } from 'antd';
 import styles from './Navbar.module.css';
 import type { NavbarProps } from './Navbar.props';
 import { resetAllStores } from '@/store/halpers/create';
-import { useCoffeeFiltersStore } from '@/store/coffee/coffee.filters.store';
+import { setUrlParams, useCoffeeStore } from '@/store/coffee/coffee.store';
+import { useShallow } from 'zustand/shallow';
 
 export const Navbar: React.FC<NavbarProps> = () => {
-	const { setUrlParams, urlParams } = useCoffeeFiltersStore();
+	const urlParams = useCoffeeStore(useShallow((state) => state.urlParams));
 
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const value = e.target.value;
